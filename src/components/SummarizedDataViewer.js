@@ -16,10 +16,15 @@ const SummarizedDataViewer = ({ data }) => {
     }, [data]);
 
     const scrollToTheme = (theme) => {
-        themeRefs.current[theme]?.current?.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-        });
+        // 添加延迟检查，确保 ref 存在
+        setTimeout(() => {
+            if (themeRefs.current[theme]?.current) {
+                themeRefs.current[theme].current.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        }, 100); // 添加小延迟，等待 refs 初始化
     };
 
     if (!data || Object.keys(data).length === 0) {
@@ -65,17 +70,18 @@ const SummarizedDataViewer = ({ data }) => {
 
     return (
         <div className="flex gap-6">
-            {/* 侧边栏目录 */}
             <div className="hidden lg:block w-64 flex-shrink-0">
-                <TableOfContents data={data} onItemClick={scrollToTheme} />
+                <TableOfContents data={data} />
             </div>
-        <div className="font-sans text-gray-800 bg-gray-50 rounded-lg shadow-lg grid grid-cols-1 md:grid-cols-2 w-full gap-6 p-6">
-            {processedData.map(({ theme, themeData, themeTotalOriginalContentCount }, themeIndex) => {
-                return (
-                    <div key={theme} ref={themeRefs.current[theme]} className="mb-8 p-6 bg-white border border-gray-200 rounded-md shadow-sm flex flex-col">
-                        <h2 className="text-2xl font-bold text-indigo-700 mb-6 pb-3 border-b-2 border-indigo-500">
-                            {theme.replaceAll('*', '')}
-                        </h2>
+            <div className="font-sans text-gray-800 bg-gray-50 rounded-lg shadow-lg grid grid-cols-1 md:grid-cols-2 w-full gap-6 p-6">
+                {processedData.map(({ theme, themeData, themeTotalOriginalContentCount }, themeIndex) => {
+                    // 将主题名称转换为有效的 HTML id
+                    const themeId = theme.replaceAll('*', '').replaceAll(' ', '-');
+                    return (
+                        <div key={theme} id={themeId} className="mb-8 p-6 bg-white border border-gray-200 rounded-md shadow-sm flex flex-col">
+                            <h2 className="text-2xl font-bold text-indigo-700 mb-6 pb-3 border-b-2 border-indigo-500">
+                                {theme.replaceAll('*', '')}
+                            </h2>
                         <div className="flex-grow">
                             {themeData.summary_list && themeData.summary_list.length > 0 ? (
                                 themeData.summary_list.map((summaryItem, summaryIndex) => {
