@@ -12,7 +12,7 @@ export default function HomePage() {
     return (
         <div className="min-h-screen bg-gray-100 py-8">
             <header className="mb-8">
-                <h1 className="text-4xl font-bold text-center text-gray-800">分析结果</h1>
+                <h1 className="text-4xl font-bold text-center text-gray-800">领克900社媒聆听分析报告</h1>
             </header>
             <main className='w-full'>
                 <SummarizedDataViewer data={jsonData} />

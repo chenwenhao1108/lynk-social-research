@@ -1,9 +1,26 @@
 // src/components/SummarizedDataViewer.js
 "use client"
-import React, { useState, useMemo } from 'react'; // 引入 useMemo
+import React, { useState, useMemo, useRef, useEffect } from 'react'; // 引入 useMemo
+import TableOfContents from './TableOfContents';
 
 const SummarizedDataViewer = ({ data }) => {
     const [expandedPoints, setExpandedPoints] = useState({});
+
+    const themeRefs = useRef({});
+
+    // 初始化 refs
+    useEffect(() => {
+        Object.keys(data).forEach(theme => {
+            themeRefs.current[theme] = themeRefs.current[theme] || React.createRef();
+        });
+    }, [data]);
+
+    const scrollToTheme = (theme) => {
+        themeRefs.current[theme]?.current?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
+    };
 
     if (!data || Object.keys(data).length === 0) {
         return <p className="text-gray-600 text-lg p-4">暂无数据可展示。</p>;
@@ -47,10 +64,15 @@ const SummarizedDataViewer = ({ data }) => {
     }, [data]);
 
     return (
+        <div className="flex gap-6">
+            {/* 侧边栏目录 */}
+            <div className="hidden lg:block w-64 flex-shrink-0">
+                <TableOfContents data={data} onItemClick={scrollToTheme} />
+            </div>
         <div className="font-sans text-gray-800 bg-gray-50 rounded-lg shadow-lg grid grid-cols-1 md:grid-cols-2 w-full gap-6 p-6">
             {processedData.map(({ theme, themeData, themeTotalOriginalContentCount }, themeIndex) => {
                 return (
-                    <div key={theme} className="mb-8 p-6 bg-white border border-gray-200 rounded-md shadow-sm flex flex-col">
+                    <div key={theme} ref={themeRefs.current[theme]} className="mb-8 p-6 bg-white border border-gray-200 rounded-md shadow-sm flex flex-col">
                         <h2 className="text-2xl font-bold text-indigo-700 mb-6 pb-3 border-b-2 border-indigo-500">
                             {theme.replaceAll('*', '')}
                         </h2>
@@ -99,7 +121,7 @@ const SummarizedDataViewer = ({ data }) => {
                                                                 {pointItem.original_content && pointItem.original_content.length > 0 && (
                                                                     <div className="mt-2 pl-4 border-l-2 border-gray-300">
                                                                         <p className="text-sm font-medium text-gray-700 mb-1">
-                                                                            <strong>用户原声 ({pointItem.original_content.length})：</strong>
+                                                                            <strong>典型用户原声 ({pointItem.original_content.length})：</strong>
                                                                         </p>
                                                                         <ul className="list-disc pl-5 space-y-1">
                                                                             {displayContents.map((content, contentIndex) => (
@@ -136,7 +158,7 @@ const SummarizedDataViewer = ({ data }) => {
                     </div>
                 );
             })}
-            <div className="mb-8 p-6 bg-white border border-gray-200 rounded-md shadow-sm flex flex-col">
+            <div ref={themeRefs.current["用户在考虑领克900时，对比的竞品车型有哪些；"]} className="mb-8 p-6 bg-white border border-gray-200 rounded-md shadow-sm flex flex-col">
                         <h2 className="text-2xl font-bold text-indigo-700 mb-6 pb-3 border-b-2 border-indigo-500">
                         用户在考虑领克900时，对比的竞品车型有哪些；
                         </h2>
@@ -157,6 +179,7 @@ const SummarizedDataViewer = ({ data }) => {
                                         </div>
                         </div>
                     </div>
+        </div>
         </div>
     );
 };
