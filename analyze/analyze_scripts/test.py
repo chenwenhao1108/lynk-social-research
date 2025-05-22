@@ -1,10 +1,9 @@
 from utils import *
 
-openai_service = OpenAIService()
+theme_count = read_json("analyze/analyze_results/theme_count.json")
 
-res = openai_service.infer(
-    "你好",
-    system_prompt="你是一个聊天机器人。请用以下格式返回内容：\n```json\n{\"message\": \"你的回复内容\"}\n```",
-)
+for theme in theme_count.values():
+    theme["content"] = list(set(theme["content"]))
 
-print(res)
+write_json(theme_count, "analyze/analyze_results/theme_count.json")
+    
