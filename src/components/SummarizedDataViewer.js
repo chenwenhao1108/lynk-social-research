@@ -15,17 +15,6 @@ const SummarizedDataViewer = ({ data }) => {
         });
     }, [data]);
 
-    const scrollToTheme = (theme) => {
-        // 添加延迟检查，确保 ref 存在
-        setTimeout(() => {
-            if (themeRefs.current[theme]?.current) {
-                themeRefs.current[theme].current.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-            }
-        }, 100); // 添加小延迟，等待 refs 初始化
-    };
 
     if (!data || Object.keys(data).length === 0) {
         return <p className="text-gray-600 text-lg p-4">暂无数据可展示。</p>;
@@ -85,6 +74,7 @@ const SummarizedDataViewer = ({ data }) => {
                         <div className="flex-grow">
                             {themeData.summary_list && themeData.summary_list.length > 0 ? (
                                 themeData.summary_list.map((summaryItem, summaryIndex) => {
+                                    const summaryId = `${themeId}-${summaryItem.summary}`;
                                     let summaryOriginalContentCount = 0;
                                     summaryItem.points?.forEach(pointItem => {
                                         summaryOriginalContentCount += pointItem.original_content?.length || 0;
@@ -93,12 +83,10 @@ const SummarizedDataViewer = ({ data }) => {
                                     const discussionPercentage = themeTotalOriginalContentCount > 0 
                                         ? ((summaryOriginalContentCount / themeTotalOriginalContentCount) * 100).toFixed(2)
                                         : 0;
-                                    // 使用原始的 summaryIndex (未排序前的) 或者 themeIndex-summaryIndex 作为 pointKey 的一部分，确保唯一性
-                                    // 如果 summaryItem 有唯一 ID，使用它会更好
                                     const originalSummaryIndex = data[theme].summary_list.findIndex(s => s.summary === summaryItem.summary); 
 
                                     return (
-                                        <div key={summaryIndex} className="mb-6 p-4 bg-indigo-50 border-l-4 border-indigo-500 rounded-r-md">
+                                        <div key={summaryIndex} id={summaryId} className="mb-6 p-4 bg-indigo-50 border-l-4 border-indigo-500 rounded-r-md">
                                             <div className="flex justify-between items-start mb-3">
                                                 <h3 className="text-xl font-semibold text-indigo-600 flex-1 break-words">
                                                     {summaryItem.summary}
