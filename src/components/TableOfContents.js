@@ -4,16 +4,28 @@ const TableOfContents = ({ data }) => {
     const sortedThemes = useMemo(() => {
         return Object.entries(data).map(([theme, themeData]) => {
             let totalCount = 0;
-            const summaries = themeData.summary_list?.map((summaryItem, index) => {
-                let summaryCount = 0;
+            themeData.summary_list?.forEach(summaryItem => {
                 summaryItem.points?.forEach(pointItem => {
-                    summaryCount += pointItem.original_content?.length || 0;
+                    totalCount += pointItem.original_content?.length || 0;
                 });
-                totalCount += summaryCount;
-                return { summary: summaryItem.summary, count: summaryCount, index };
-            }) || [];
-            return { theme, summaries, totalCount };
-        }).sort((a, b) => b.totalCount - a.totalCount);
+            });
+            const sortedSummaryList = themeData.summary_list
+            ? [...themeData.summary_list].sort((a, b) => {
+                let aContentCount = 0;
+                a.points?.forEach(p => { aContentCount += p.original_content?.length || 0; });
+                
+                let bContentCount = 0;
+                b.points?.forEach(p => { bContentCount += p.original_content?.length || 0; });
+
+                const aPercentage = totalCount > 0 ? (aContentCount / totalCount) : 0;
+                const bPercentage = totalCount > 0 ? (bContentCount / totalCount) : 0;
+                
+                return bPercentage - aPercentage; // 降序排序
+              })
+            : [];
+
+            return { theme, summaries: sortedSummaryList };
+        })
     }, [data]);
 
     return (

@@ -1,20 +1,10 @@
 // src/components/SummarizedDataViewer.js
 "use client"
-import React, { useState, useMemo, useRef, useEffect } from 'react'; // 引入 useMemo
+import React, { useState, useMemo, } from 'react'; // 引入 useMemo
 import TableOfContents from './TableOfContents';
 
 const SummarizedDataViewer = ({ data }) => {
     const [expandedPoints, setExpandedPoints] = useState({});
-
-    const themeRefs = useRef({});
-
-    // 初始化 refs
-    useEffect(() => {
-        Object.keys(data).forEach(theme => {
-            themeRefs.current[theme] = themeRefs.current[theme] || React.createRef();
-        });
-    }, [data]);
-
 
     if (!data || Object.keys(data).length === 0) {
         return <p className="text-gray-600 text-lg p-4">暂无数据可展示。</p>;
@@ -100,7 +90,6 @@ const SummarizedDataViewer = ({ data }) => {
                                             {summaryItem.points && summaryItem.points.length > 0 ? (
                                                 <ul className="list-none pl-0">
                                                     {summaryItem.points.map((pointItem, pointIndex) => {
-                                                        // 使用 themeIndex, originalSummaryIndex, pointIndex 确保 key 的稳定性
                                                         const pointKey = `${themeIndex}-${originalSummaryIndex}-${pointIndex}`;
                                                         const isExpanded = !!expandedPoints[pointKey];
                                                         const displayContents = isExpanded 
@@ -126,7 +115,7 @@ const SummarizedDataViewer = ({ data }) => {
                                                                         </ul>
                                                                         {pointItem.original_content.length > 2 && (
                                                                             <button 
-                                                                                onClick={() => toggleExpandPoint(themeIndex, originalSummaryIndex, pointIndex)} // 更新 toggleExpandPoint 的参数
+                                                                                onClick={() => toggleExpandPoint(themeIndex, originalSummaryIndex, pointIndex)}
                                                                                 className="mt-2 text-xs text-indigo-600 hover:text-indigo-800 font-medium focus:outline-none
                                                                                 cursor-pointer"
                                                                             >
@@ -152,7 +141,7 @@ const SummarizedDataViewer = ({ data }) => {
                     </div>
                 );
             })}
-            <div ref={themeRefs.current["用户在考虑领克900时，对比的竞品车型有哪些；"]} className="mb-8 p-6 bg-white border border-gray-200 rounded-md shadow-sm flex flex-col">
+            <div className="mb-8 p-6 bg-white border border-gray-200 rounded-md shadow-sm flex flex-col">
                         <h2 className="text-2xl font-bold text-indigo-700 mb-6 pb-3 border-b-2 border-indigo-500">
                         用户在考虑领克900时，对比的竞品车型有哪些；
                         </h2>
@@ -166,7 +155,7 @@ const SummarizedDataViewer = ({ data }) => {
                                                 <ul className="list-none pl-0">
                                                             <li className="mb-4 p-3 bg-white border border-gray-300 rounded-md shadow-xs">
                                                                 <p className="text-base text-gray-700 mb-2 break-words">
-                                                                    <strong className="font-medium text-gray-900">深蓝S09，蓝山，极氪9x，问界M8，理想L9，腾势N9，</strong>
+                                                                    <strong className="font-medium text-gray-900">深蓝S09，蓝山，极氪9x，问界M8，理想L9，腾势N9</strong>
                                                                 </p>
                                                             </li>
                                                 </ul>
