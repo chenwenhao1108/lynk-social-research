@@ -39,6 +39,22 @@ const TableOfContents = ({ data }) => {
       </h3>
       <nav className="max-h-[calc(100vh-8rem)] overflow-y-auto scrollbar-thin scrollbar-thumb-indigo-200 scrollbar-track-gray-100 pr-2">
         <ul className="space-y-2">
+          <li className="space-y-1">
+            <a
+              href="#totalAnalysis"
+              className="block px-3 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 rounded-md transition-colors duration-150 ease-in-out font-medium"
+            >
+              总体分析
+            </a>
+          </li>
+          <li className="space-y-1">
+            <a
+              href="#suggestion"
+              className="block px-3 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 rounded-md transition-colors duration-150 ease-in-out font-medium"
+            >
+              决策建议
+            </a>
+          </li>
           {sortedThemes.map(({ theme, summaries }, themeIndex) => {
             const themeId = theme.replaceAll("*", "").replaceAll(" ", "-");
             return (

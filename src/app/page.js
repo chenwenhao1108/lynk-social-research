@@ -1,7 +1,7 @@
 // src/app/page.js (或者任何你想展示数据的页面)
 "use client";
 import SummarizedDataViewer from "../components/SummarizedDataViewer"; // 调整路径
-import jsonData from "../../analyze/analyze_results/merged_summarized.json";
+import jsonData from "../../analyze/analyze_results/merged_summarized_data.json";
 
 export default function HomePage() {
   if (!jsonData) {
@@ -18,7 +18,7 @@ export default function HomePage() {
         </h1>
       </header>
       <main className="w-full">
-        <SummarizedDataViewer data={jsonData} />
+        <SummarizedDataViewer rawData={jsonData} />
       </main>
     </div>
   );

@@ -2,9 +2,12 @@
 "use client";
 import React, { useState, useMemo } from "react"; // 引入 useMemo
 import TableOfContents from "./TableOfContents";
+import ReactMarkdown from "react-markdown";
+import MarkdownComponents from "./ChatWidget/MarkdownComponents";
 
-const SummarizedDataViewer = ({ data }) => {
+const SummarizedDataViewer = ({ rawData }) => {
   const [expandedPoints, setExpandedPoints] = useState({});
+  const data = rawData["data"];
 
   if (!data || Object.keys(data).length === 0) {
     return <p className="text-gray-600 text-lg p-4">暂无数据可展示。</p>;
@@ -68,6 +71,38 @@ const SummarizedDataViewer = ({ data }) => {
         <TableOfContents data={data} />
       </div>
       <div className="font-sans text-gray-800 bg-gray-50 rounded-lg shadow-lg grid grid-cols-1 md:grid-cols-2 w-full gap-6 p-6">
+        <div className=" text-black p-8 mb-12 bg-white shadow-lg rounded-lg">
+          <h2
+            className="text-indigo-700 text-2xl font-bold mb-4 mt-10 border-b pb-2"
+            id="totalAnalysis"
+          >
+            总体分析
+          </h2>
+          <div>
+            <ReactMarkdown
+              components={MarkdownComponents}
+              className="markdown-content"
+            >
+              {rawData.total_summary}
+            </ReactMarkdown>
+          </div>
+        </div>
+        <div className=" text-black p-8 mb-12 bg-white shadow-lg rounded-lg">
+          <h2
+            className="text-indigo-700 text-2xl font-bold mb-4 mt-10 border-b pb-2"
+            id="suggestion"
+          >
+            决策建议
+          </h2>
+          <div>
+            <ReactMarkdown
+              components={MarkdownComponents}
+              className="markdown-content"
+            >
+              {rawData.suggestion}
+            </ReactMarkdown>
+          </div>
+        </div>
         {processedData.map(
           (
             { theme, themeData, themeTotalOriginalContentCount },
